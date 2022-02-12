@@ -9,6 +9,7 @@
   </properties>
   
   <build>
+<finalName>vsssfshss</finalName>
   <plugins>
   <plugin>
   <groupId>org.apache.maven.plugins</groupId>
