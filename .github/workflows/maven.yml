@@ -45,8 +45,8 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         instance-ids: ${{ secrets.INSTANCE_ID }}
 
-        working-directory: /home/ec2-user/vsssfshss
-        command: docker-restart.sh
+#        working-directory: /home/ec2-user/vsssfshss
+        command: sudo /home/ec2-user/vsssfshss/docker-restart.sh
         comment: Update docker image
 
     # Catch SSM outputs
