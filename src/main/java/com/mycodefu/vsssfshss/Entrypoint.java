@@ -21,6 +21,7 @@ public class Entrypoint {
                         byte[] bytes = new byte[byteBuf.capacity()];
                         byteBuf.getBytes(0, bytes);
                         System.out.println(new String(bytes));
+
                     }
 
                     @Override

@@ -3,6 +3,7 @@ package com.mycodefu.vsssfshss.server;
 import static io.netty.handler.codec.http.HttpHeaderNames.HOST;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelId;
@@ -10,6 +11,7 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
+import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketServerHandshaker;
 import io.netty.handler.codec.http.websocketx.WebSocketServerHandshakerFactory;
@@ -52,29 +54,63 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<Object> {
             FullHttpRequest msg) {
         String ip = channelHandlerContext.channel().remoteAddress().toString();
 
-        System.out.printf("Received HTTP Request from %s with path %s\n", ip, msg.uri());
-        if (msg.uri().equals("/ws")) {
-            WebSocketServerHandshakerFactory wsFactory =
-                    new WebSocketServerHandshakerFactory(getWebSocketLocation(msg), null, true);
-            WebSocketServerHandshaker handshaker = wsFactory.newHandshaker(msg);
-            if (handshaker == null) {
-                WebSocketServerHandshakerFactory
-                        .sendUnsupportedVersionResponse(channelHandlerContext.channel());
-            } else {
-                ChannelFuture channelFuture =
-                        handshaker.handshake(channelHandlerContext.channel(), msg);
-                if (channelFuture.isSuccess()) {
-                    System.out.println(channelHandlerContext.channel() + " Connected");
+        QueryStringDecoder uri = new QueryStringDecoder(msg.uri());
+        System.out.println(uri.path());
 
-                    callback.serverConnectionOpened(channelHandlerContext.channel().id(),
-                            channelHandlerContext.channel().remoteAddress().toString());
-                }
+        switch(uri.path()) {
+            case "/": {
+                byte[] content = """
+<html>
+<body>
+<h1 style="background-color:tomato;">Hello World!</h1>
+</body>
+</html>
+""".getBytes();
+                DefaultFullHttpResponse response = new DefaultFullHttpResponse(msg.getProtocolVersion(),
+                        HttpResponseStatus.OK,
+                        Unpooled.wrappedBuffer(content));
+                response.headers().add("Content-Length", content.length);
+                response.headers().add("Content-Type", "text/html");
+                response.headers().add("Connection", "keep-alive");
+                channelHandlerContext.writeAndFlush(response);
+                break;
             }
-        } else {
-            channelHandlerContext.writeAndFlush(new DefaultFullHttpResponse(msg.protocolVersion(),
-                    HttpResponseStatus.OK, PooledByteBufAllocator.DEFAULT.buffer(13)
-                            .writeBytes("Hello World!".getBytes())));
-            channelHandlerContext.close();
+            case "/ws": {
+                WebSocketServerHandshakerFactory wsFactory =
+                        new WebSocketServerHandshakerFactory(getWebSocketLocation(msg), null, true);
+                WebSocketServerHandshaker handshaker = wsFactory.newHandshaker(msg);
+                if (handshaker == null) {
+                    WebSocketServerHandshakerFactory
+                            .sendUnsupportedVersionResponse(channelHandlerContext.channel());
+                } else {
+                    ChannelFuture channelFuture =
+                            handshaker.handshake(channelHandlerContext.channel(), msg);
+                    if (channelFuture.isSuccess()) {
+                        System.out.println(channelHandlerContext.channel() + " Connected");
+
+                        callback.serverConnectionOpened(channelHandlerContext.channel().id(),
+                                channelHandlerContext.channel().remoteAddress().toString());
+                    }
+                }
+                break;
+            }
+            default: {
+                byte[] content = """
+<html>
+<body>
+Path not found '%s'.
+</body>
+</html>
+""".formatted(uri.path()).getBytes();
+                DefaultFullHttpResponse response = new DefaultFullHttpResponse(msg.getProtocolVersion(),
+                        HttpResponseStatus.NOT_FOUND,
+                        Unpooled.wrappedBuffer(content));
+                response.headers().add("Content-Length", content.length);
+                response.headers().add("Content-Type", "text/html");
+                response.headers().add("Connection", "keep-alive");
+                channelHandlerContext.writeAndFlush(response);
+                break;
+            }
         }
     }
 
