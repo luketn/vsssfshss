@@ -33,3 +33,6 @@ bin/
 
 # dependency-reduced-pom file
 dependency-reduced-pom.xml
+
+# IntelliJ
+/.idea/

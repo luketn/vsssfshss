@@ -5,8 +5,8 @@ RUN apk upgrade --no-cache && \
 
 WORKDIR /opt/vsssfshss
 
-ADD target/vsssfshss-0.0.1-SNAPSHOT.jar .
+ADD target/vsssfshss.jar .
 
 EXPOSE 8080/tcp
 
-CMD java -jar vsssfshss-0.0.1-SNAPSHOT.jar
+CMD java -jar vsssfshss.jar
