@@ -2,7 +2,6 @@ package com.mycodefu.vsssfshss.server;
 
 import static io.netty.handler.codec.http.HttpHeaderNames.HOST;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
@@ -55,20 +54,20 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<Object> {
         String ip = channelHandlerContext.channel().remoteAddress().toString();
 
         QueryStringDecoder uri = new QueryStringDecoder(msg.uri());
-        System.out.println(uri.path());
+        System.out.printf("%s requested from %s\n", uri.path(), ip);
 
-        switch(uri.path()) {
+        switch (uri.path()) {
             case "/": {
                 byte[] content = """
-<html>
-<body>
-<h1 style="background-color:tomato;">Hello World!</h1>
-</body>
-</html>
-""".getBytes();
-                DefaultFullHttpResponse response = new DefaultFullHttpResponse(msg.getProtocolVersion(),
-                        HttpResponseStatus.OK,
-                        Unpooled.wrappedBuffer(content));
+                        <html>
+                        <body>
+                        <h1 style="background-color:tomato;">Hello World!</h1>
+                        </body>
+                        </html>
+                        """.getBytes();
+                DefaultFullHttpResponse response =
+                        new DefaultFullHttpResponse(msg.protocolVersion(), HttpResponseStatus.OK,
+                                Unpooled.wrappedBuffer(content));
                 response.headers().add("Content-Length", content.length);
                 response.headers().add("Content-Type", "text/html");
                 response.headers().add("Connection", "keep-alive");
@@ -96,15 +95,15 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<Object> {
             }
             default: {
                 byte[] content = """
-<html>
-<body>
-Path not found '%s'.
-</body>
-</html>
-""".formatted(uri.path()).getBytes();
-                DefaultFullHttpResponse response = new DefaultFullHttpResponse(msg.getProtocolVersion(),
-                        HttpResponseStatus.NOT_FOUND,
-                        Unpooled.wrappedBuffer(content));
+                        <html>
+                        <body>
+                        Path not found '%s'.
+                        </body>
+                        </html>
+                        """.formatted(uri.path()).getBytes();
+                DefaultFullHttpResponse response =
+                        new DefaultFullHttpResponse(msg.protocolVersion(),
+                                HttpResponseStatus.NOT_FOUND, Unpooled.wrappedBuffer(content));
                 response.headers().add("Content-Length", content.length);
                 response.headers().add("Content-Type", "text/html");
                 response.headers().add("Connection", "keep-alive");
