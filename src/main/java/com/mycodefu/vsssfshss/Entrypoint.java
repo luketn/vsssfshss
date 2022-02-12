@@ -27,5 +27,8 @@ public class Entrypoint {
                     }
                 });
         server.listen();
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            server.close();
+        }));
     }
 }

@@ -2,7 +2,9 @@ package com.mycodefu.vsssfshss.server;
 
 import java.net.InetSocketAddress;
 import io.netty.bootstrap.ServerBootstrap;
+import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelId;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.group.ChannelGroup;
@@ -13,6 +15,8 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.address.DynamicAddressConnectHandler;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
+import io.netty.handler.codec.http.websocketx.BinaryWebSocketFrame;
+import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.util.concurrent.DefaultEventExecutor;
@@ -77,6 +81,21 @@ public class NettyServer {
         } finally {
             bossGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();
+        }
+    }
+
+    public void sendMessage(ChannelId id, ByteBuf message) {
+        try {
+            Channel channel = allChannels.find(id);
+            if (channel != null) {
+                ByteBuf outboundMessage = message.copy();
+                WebSocketFrame frame = new BinaryWebSocketFrame(outboundMessage);
+                channel.writeAndFlush(frame);
+            }
+        } catch (Exception e) {
+            System.out.printf("Unable to find the channel %s to send message to.\n",
+                    id.asShortText());
+            e.printStackTrace();
         }
     }
 }
