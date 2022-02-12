@@ -1,1 +1,1 @@
-docker buildx build --push -t vsssfshss --platform linux/amd64,linux/arm64 .
+docker buildx build --push -t luketn\vsssfshss --platform linux/amd64,linux/arm64 .
