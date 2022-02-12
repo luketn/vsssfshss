@@ -35,4 +35,20 @@ jobs:
         password: ${{ secrets.DOCKERHUB_TOKEN }}
     - name: Docker deploy
       run: ./docker-deploy.sh
-        
+
+    - name: AWS SSM Send-Command
+      uses: peterkimzz/aws-ssm-send-command@master
+      id: ssm
+      with:
+        aws-region: ${{ secrets.AWS_REGION }}
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        instance-ids: ${{ secrets.INSTANCE_ID }}
+
+#        working-directory: /home/ec2-user/vsssfshss
+        command: sudo /home/ec2-user/vsssfshss/docker-restart.sh
+        comment: Update docker image
+
+    # Catch SSM outputs
+    - name: Get the outputs
+      run: echo "The Command id is ${{ steps.ssm.outputs.command-id }}"
