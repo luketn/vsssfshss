@@ -18,7 +18,9 @@ public class Entrypoint {
                     @Override
                     public void serverConnectionMessage(ChannelId id, String sourceIpAddress,
                             ByteBuf byteBuf) {
-
+                        byte[] bytes = new byte[byteBuf.capacity()];
+                        byteBuf.getBytes(0, bytes);
+                        System.out.println(new String(bytes));
                     }
 
                     @Override
