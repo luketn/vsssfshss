@@ -21,7 +21,7 @@ import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.util.concurrent.DefaultEventExecutor;
 
-public class NettyServer {
+public class NettyServer implements MessageSender {
     private int initialPort;
     private NioEventLoopGroup bossGroup;
     private NioEventLoopGroup workerGroup;
@@ -47,7 +47,7 @@ public class NettyServer {
                         ChannelPipeline pipeline = ch.pipeline();
                         pipeline.addLast(new HttpServerCodec());
                         pipeline.addLast(new HttpObjectAggregator(65536));
-                        pipeline.addLast(new NettyServerHandler(callback));
+                        pipeline.addLast(new NettyServerHandler(callback, NettyServer.this));
                     }
                 });
     }

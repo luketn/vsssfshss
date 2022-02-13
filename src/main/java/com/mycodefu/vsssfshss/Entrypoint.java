@@ -1,5 +1,6 @@
 package com.mycodefu.vsssfshss;
 
+import com.mycodefu.vsssfshss.server.MessageSender;
 import com.mycodefu.vsssfshss.server.NettyServer;
 import com.mycodefu.vsssfshss.server.NettyServerHandler;
 import io.netty.buffer.ByteBuf;
@@ -11,13 +12,14 @@ public class Entrypoint {
                 new NettyServer(8080, new NettyServerHandler.ServerConnectionCallback() {
 
                     @Override
-                    public void serverConnectionOpened(ChannelId id, String remoteAddress) {
+                    public void serverConnectionOpened(ChannelId id, MessageSender messageSender,
+                            String remoteAddress) {
 
                     }
 
                     @Override
-                    public void serverConnectionMessage(ChannelId id, String sourceIpAddress,
-                            ByteBuf byteBuf) {
+                    public void serverConnectionMessage(ChannelId id, MessageSender messageSender,
+                            String sourceIpAddress, ByteBuf byteBuf) {
                         byte[] bytes = new byte[byteBuf.capacity()];
                         byteBuf.getBytes(0, bytes);
                         System.out.println(new String(bytes));
@@ -25,7 +27,7 @@ public class Entrypoint {
                     }
 
                     @Override
-                    public void serverConnectionClosed(ChannelId id) {
+                    public void serverConnectionClosed(ChannelId id, MessageSender messageSender) {
 
                     }
                 });
