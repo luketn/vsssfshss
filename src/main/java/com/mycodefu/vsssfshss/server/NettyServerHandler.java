@@ -61,7 +61,7 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<Object> {
                 byte[] content = """
                         <html>
                         <body>
-                        <h1 style="background-color:tomato;">Hello World 2!</h1>
+                        <h1 style="background-color:tomato;">Hello World 3!</h1>
                         </body>
                         </html>
                         """.getBytes();

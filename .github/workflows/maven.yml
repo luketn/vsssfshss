@@ -36,19 +36,16 @@ jobs:
     - name: Docker deploy
       run: ./docker-deploy.sh
 
-    - name: AWS SSM Send-Command
-      uses: peterkimzz/aws-ssm-send-command@master
-      id: ssm
+    - uses: "aws-actions/configure-aws-credentials@v1"
       with:
         aws-region: ${{ secrets.AWS_REGION }}
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        instance-ids: ${{ secrets.INSTANCE_ID }}
 
-#        working-directory: /home/ec2-user/vsssfshss
-        command: sudo /home/ec2-user/vsssfshss/docker-restart.sh
-        comment: Update docker image
-
-    # Catch SSM outputs
-    - name: Get the outputs
-      run: echo "The Command id is ${{ steps.ssm.outputs.command-id }}"
+    - name: Restart Docker Remotely
+      run: aws ssm send-command \
+              --document-name AWS-RunShellScript \
+              --instance-ids ${{ secrets.INSTANCE_ID }} \
+              --parameters "commands=sudo /home/ec2-user/vsssfshss/docker-restart.sh" \
+              --output=text \
+              --comment "Restart Docker with latest"
