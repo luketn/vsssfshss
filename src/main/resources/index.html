@@ -15,7 +15,9 @@
     <p>
         This was served by the VSSSFSHSS HTTP server!
     </p>
-    <button onclick="sendMessage('Hi there!')">Say hi</button>
+    <label for="messageBox">Message</label>
+    <textarea id="messageBox"></textarea>
+    <button onclick="sendMessage(document.getElementById('messageBox').value)">Send</button>
 </body>
 
 </html>
