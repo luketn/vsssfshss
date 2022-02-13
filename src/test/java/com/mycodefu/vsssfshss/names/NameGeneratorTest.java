@@ -24,9 +24,7 @@ class NameGeneratorTest {
 
         for (int i = 0; i < 1000; i++) {
             String name = NameGenerator.generateName();
-            if (nameList.contains(name)) {
-                assertFalse(nameList.contains(name), String.format("Generated duplicate name %s", name));
-            }
+            assertFalse(nameList.contains(name), String.format("Generated duplicate name %s", name));
         }
     }
 }
