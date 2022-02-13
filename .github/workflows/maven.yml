@@ -43,7 +43,8 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
     - name: Restart Docker Remotely
-      run: aws ssm send-command \
+      run: |
+         aws ssm send-command \
               --document-name AWS-RunShellScript \
               --instance-ids ${{ secrets.INSTANCE_ID }} \
               --parameters "commands=sudo /home/ec2-user/vsssfshss/docker-restart.sh" \
