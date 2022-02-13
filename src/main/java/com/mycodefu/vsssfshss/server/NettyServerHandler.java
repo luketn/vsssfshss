@@ -17,16 +17,18 @@ import io.netty.handler.codec.http.websocketx.WebSocketServerHandshakerFactory;
 
 public class NettyServerHandler extends SimpleChannelInboundHandler<Object> {
     private final ServerConnectionCallback callback;
+    private final MessageSender messageSender;
 
-    public NettyServerHandler(ServerConnectionCallback callback) {
+    public NettyServerHandler(ServerConnectionCallback callback, MessageSender messageSender) {
         this.callback = callback;
+        this.messageSender = messageSender;
     }
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         super.channelInactive(ctx);
 
-        callback.serverConnectionClosed(ctx.channel().id());
+        callback.serverConnectionClosed(ctx.channel().id(), messageSender);
     }
 
     @Override
@@ -41,13 +43,14 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<Object> {
     }
 
     public interface ServerConnectionCallback {
-        void serverConnectionOpened(ChannelId id, String remoteAddress);
+        void serverConnectionOpened(ChannelId id, MessageSender messageSender,
+                String remoteAddress);
 
-        void serverConnectionMessage(ChannelId id, String sourceIpAddress, ByteBuf byteBuf);
+        void serverConnectionMessage(ChannelId id, MessageSender messageSender,
+                String sourceIpAddress, ByteBuf byteBuf);
 
-        void serverConnectionClosed(ChannelId id);
+        void serverConnectionClosed(ChannelId id, MessageSender messageSender);
     }
-
 
     private void handleHttpRequest(ChannelHandlerContext channelHandlerContext,
             FullHttpRequest msg) {
@@ -88,6 +91,7 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<Object> {
                         System.out.println(channelHandlerContext.channel() + " Connected");
 
                         callback.serverConnectionOpened(channelHandlerContext.channel().id(),
+                                messageSender,
                                 channelHandlerContext.channel().remoteAddress().toString());
                     }
                 }
@@ -116,7 +120,8 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<Object> {
     private void handleWebSocketRequest(ChannelHandlerContext channelHandlerContext,
             WebSocketFrame msg) {
         String ip = channelHandlerContext.channel().remoteAddress().toString();
-        callback.serverConnectionMessage(channelHandlerContext.channel().id(), ip, msg.content());
+        callback.serverConnectionMessage(channelHandlerContext.channel().id(), messageSender, ip,
+                msg.content());
     }
 
     private String getWebSocketLocation(FullHttpRequest req) {
