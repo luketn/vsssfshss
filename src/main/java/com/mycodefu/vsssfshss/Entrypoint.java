@@ -42,7 +42,8 @@ public class Entrypoint {
                     public HttpMessage serverHttpMessage(ChannelId id, String ip, String path,
                             Map<String, List<String>> queryParameters,
                             Map<String, String> requestHeaders) {
-                        byte[] content = HttpResourceManager.getResource(path);
+                        byte[] content = HttpResourceManager
+                                .getResource(path.equals("/") ? "/index.html" : path);
                         if (content != null) {
                             Map<String, Object> headers = new HashMap<>();
                             headers.put("content-length", content.length);
