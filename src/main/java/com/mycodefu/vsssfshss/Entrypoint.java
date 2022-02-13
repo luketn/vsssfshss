@@ -4,6 +4,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import com.mycodefu.vsssfshss.http.HttpResourceManager;
 import com.mycodefu.vsssfshss.server.HttpMessage;
 import com.mycodefu.vsssfshss.server.MessageSender;
 import com.mycodefu.vsssfshss.server.NettyServer;
@@ -41,17 +42,25 @@ public class Entrypoint {
                     public HttpMessage serverHttpMessage(ChannelId id, String ip, String path,
                             Map<String, List<String>> queryParameters,
                             Map<String, String> requestHeaders) {
-                        byte[] content = """
-                                <html>
-                                <body>
-                                <h1>Hello world!</h1>
-                                </body>
-                                </html>
-                                """.getBytes(StandardCharsets.UTF_8);
-                        Map<String, Object> headers = new HashMap<>();
-                        headers.put("content-length", content.length);
-                        headers.put("content-type", "text/html");
-                        return new HttpMessage(HttpResponseStatus.OK, content, headers);
+                        byte[] content = HttpResourceManager.getResource(path);
+                        if (content != null) {
+                            Map<String, Object> headers = new HashMap<>();
+                            headers.put("content-length", content.length);
+                            headers.put("content-type", "text/html");
+                            return new HttpMessage(HttpResponseStatus.OK, content, headers);
+                        } else {
+                            content = """
+                                    <html>
+                                    <body>
+                                    The path '%s' was not found!
+                                    </body>
+                                    </html>
+                                    """.formatted(path).getBytes(StandardCharsets.UTF_8);
+                            Map<String, Object> headers = new HashMap<>();
+                            headers.put("content-length", content.length);
+                            headers.put("content-type", "text/html");
+                            return new HttpMessage(HttpResponseStatus.NOT_FOUND, content, headers);
+                        }
                     }
                 });
         server.listen();
