@@ -1,10 +1,16 @@
 package com.mycodefu.vsssfshss;
 
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import com.mycodefu.vsssfshss.server.HttpMessage;
 import com.mycodefu.vsssfshss.server.MessageSender;
 import com.mycodefu.vsssfshss.server.NettyServer;
 import com.mycodefu.vsssfshss.server.NettyServerHandler;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelId;
+import io.netty.handler.codec.http.HttpResponseStatus;
 
 public class Entrypoint {
     public static void main(String[] args) {
@@ -29,6 +35,23 @@ public class Entrypoint {
                     @Override
                     public void serverConnectionClosed(ChannelId id, MessageSender messageSender) {
 
+                    }
+
+                    @Override
+                    public HttpMessage serverHttpMessage(ChannelId id, String ip, String path,
+                            Map<String, List<String>> queryParameters,
+                            Map<String, String> requestHeaders) {
+                        byte[] content = """
+                                <html>
+                                <body>
+                                <h1>Hello world!</h1>
+                                </body>
+                                </html>
+                                """.getBytes(StandardCharsets.UTF_8);
+                        Map<String, Object> headers = new HashMap<>();
+                        headers.put("content-length", content.length);
+                        headers.put("content-type", "text/html");
+                        return new HttpMessage(HttpResponseStatus.OK, content, headers);
                     }
                 });
         server.listen();
