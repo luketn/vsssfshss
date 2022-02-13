@@ -1,10 +1,21 @@
 <html>
 
+<head>
+    <script>
+        let socket = new WebSocket("ws://" + location.host + "/ws");
+
+        function sendMessage(message) {
+            socket.send(message);
+        }
+    </script>
+</head>
+
 <body>
     <h1>Hello world!</h1>
     <p>
         This was served by the VSSSFSHSS HTTP server!
     </p>
+    <button onclick="sendMessage('Hi there!')">Say hi</button>
 </body>
 
 </html>
