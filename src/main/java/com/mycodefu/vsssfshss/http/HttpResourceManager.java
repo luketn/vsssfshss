@@ -3,20 +3,20 @@ package com.mycodefu.vsssfshss.http;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class HttpResourceManager {
-    private static final Map<String, byte[]> resourceCache = new HashMap<>();
+    private static final Map<String, byte[]> resourceCache = new ConcurrentHashMap<>();
 
     public static byte[] getResource(String path) {
         if (resourceCache.containsKey(path)) {
             return resourceCache.get(path);
         } else {
             byte[] resourceContents = readResource(path);
-            resourceCache.put(path, resourceContents);
+            if (resourceContents != null) {
+                resourceCache.put(path, resourceContents);
+            }
             return resourceContents;
         }
     }

@@ -1,6 +1,5 @@
 package com.mycodefu.vsssfshss;
 
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,13 +49,10 @@ public class Entrypoint {
                             headers.put("content-type", "text/html");
                             return new HttpMessage(HttpResponseStatus.OK, content, headers);
                         } else {
-                            content = """
-                                    <html>
-                                    <body>
-                                    The path '%s' was not found!
-                                    </body>
-                                    </html>
-                                    """.formatted(path).getBytes(StandardCharsets.UTF_8);
+                            content = HttpResourceManager.getResource("/404.html");
+                            if (content == null) {
+                                throw new RuntimeException("No 404 page found");
+                            }
                             Map<String, Object> headers = new HashMap<>();
                             headers.put("content-length", content.length);
                             headers.put("content-type", "text/html");
