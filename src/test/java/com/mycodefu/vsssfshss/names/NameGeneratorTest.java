@@ -17,4 +17,16 @@ class NameGeneratorTest {
         assertNotNull(name);
         assertTrue(name.length() > 2);
     }
+
+    @Test
+    void generateUniqueNames() {
+        List<String> nameList = IntStream.range(0, 100000).mapToObj(value -> NameGenerator.generateName()).toList();
+
+        for (int i = 0; i < 1000; i++) {
+            String name = NameGenerator.generateName();
+            if (nameList.contains(name)) {
+                assertFalse(nameList.contains(name), String.format("Generated duplicate name %s", name));
+            }
+        }
+    }
 }
