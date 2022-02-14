@@ -94,7 +94,7 @@ public class NettyServer implements MessageSender {
             Channel channel = allChannels.find(id);
             if (channel != null) {
                 ByteBuf outboundMessage = message.copy();
-                WebSocketFrame frame = new BinaryWebSocketFrame(outboundMessage);
+                WebSocketFrame frame = new TextWebSocketFrame(outboundMessage);
                 channel.writeAndFlush(frame);
             }
         } catch (Exception e) {
@@ -112,7 +112,7 @@ public class NettyServer implements MessageSender {
                     .toList().toArray(new ChannelMatcher[0]);
 
             ByteBuf outboundMessage = message.copy();
-            WebSocketFrame frame = new BinaryWebSocketFrame(outboundMessage);
+            WebSocketFrame frame = new TextWebSocketFrame(outboundMessage);
             allChannels.writeAndFlush(frame, ChannelMatchers.compose(matcherList));
 
         } catch (Exception e) {
