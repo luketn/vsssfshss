@@ -1,17 +1,18 @@
 package com.mycodefu.vsssfshss;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import com.mycodefu.vsssfshss.chat.ChatMessageHandler;
 import com.mycodefu.vsssfshss.http.HttpResourceManager;
 import com.mycodefu.vsssfshss.names.NameGenerator;
-import com.mycodefu.vsssfshss.server.HttpMessage;
-import com.mycodefu.vsssfshss.server.MessageSender;
-import com.mycodefu.vsssfshss.server.NettyServer;
-import com.mycodefu.vsssfshss.server.NettyServerHandler;
-import io.netty.channel.ChannelId;
+import com.mycodefu.vsssfshss.server.*;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+import io.netty.channel.Channel;
 import io.netty.handler.codec.http.HttpResponseStatus;
+
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Entrypoint {
     public static void main(String[] args) {
@@ -20,28 +21,32 @@ public class Entrypoint {
                 new NettyServer(8080, new NettyServerHandler.ServerConnectionCallback() {
 
                     @Override
-                    public void serverConnectionOpened(ChannelId id, MessageSender messageSender,
-                            String remoteAddress) {
-                        String message = "{\"message\": \"Welcome %s!\"}"
-                                .formatted(NameGenerator.generateName());
-                        messageSender.sendMessage(id, message);
+                    public void serverConnectionOpened(Channel channel, MessageSender messageSender,
+                                                       String remoteAddress) {
+
+                        String name = NameGenerator.generateName();
+                        ConnectionAttributes.set(channel, "name", name);
+
+                        String message = "{\"message\": \"Welcome %s!\"}".formatted(name);
+                        messageSender.sendMessage(channel, message);
                     }
 
                     @Override
-                    public void serverConnectionMessage(ChannelId id, MessageSender messageSender,
+                    public void serverConnectionMessage(Channel channel, MessageSender messageSender,
                             String sourceIpAddress, String message) {
                         System.out.println(message);
 
+                        String name = ConnectionAttributes.get(channel, "name");
                         chatMessageHandler.handleMessage(message, messageSender);
                     }
 
                     @Override
-                    public void serverConnectionClosed(ChannelId id, MessageSender messageSender) {
+                    public void serverConnectionClosed(Channel channel, MessageSender messageSender) {
 
                     }
 
                     @Override
-                    public HttpMessage serverHttpMessage(ChannelId id, String ip, String path,
+                    public HttpMessage serverHttpMessage(Channel channel, String ip, String path,
                             Map<String, List<String>> queryParameters,
                             Map<String, String> requestHeaders) {
                         byte[] content = HttpResourceManager

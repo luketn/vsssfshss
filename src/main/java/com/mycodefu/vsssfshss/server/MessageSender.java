@@ -1,9 +1,8 @@
 package com.mycodefu.vsssfshss.server;
 
-import io.netty.channel.ChannelId;
+import io.netty.channel.Channel;
 
 public interface MessageSender {
-    void sendMessage(ChannelId channel, String message);
-
-    void broadcast(String message, ChannelId... excludeChannelIds);
+    void sendMessage(Channel channel, String message);
+    void broadcast(String message, Channel... excludeChannels);
 }

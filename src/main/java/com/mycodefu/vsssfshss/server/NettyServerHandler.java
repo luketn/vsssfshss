@@ -1,14 +1,9 @@
 package com.mycodefu.vsssfshss.server;
 
-import static io.netty.handler.codec.http.HttpHeaderNames.HOST;
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import io.netty.buffer.Unpooled;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelId;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpRequest;
@@ -16,6 +11,13 @@ import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketServerHandshaker;
 import io.netty.handler.codec.http.websocketx.WebSocketServerHandshakerFactory;
+
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static io.netty.handler.codec.http.HttpHeaderNames.HOST;
 
 public class NettyServerHandler extends SimpleChannelInboundHandler<Object> {
     private final ServerConnectionCallback callback;
@@ -30,7 +32,7 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<Object> {
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         super.channelInactive(ctx);
 
-        callback.serverConnectionClosed(ctx.channel().id(), messageSender);
+        callback.serverConnectionClosed(ctx.channel(), messageSender);
     }
 
     @Override
@@ -45,15 +47,15 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<Object> {
     }
 
     public interface ServerConnectionCallback {
-        void serverConnectionOpened(ChannelId id, MessageSender messageSender,
-                String remoteAddress);
+        void serverConnectionOpened(Channel channel, MessageSender messageSender,
+                                    String remoteAddress);
 
-        void serverConnectionMessage(ChannelId id, MessageSender messageSender,
+        void serverConnectionMessage(Channel channel, MessageSender messageSender,
                 String sourceIpAddress, String message);
 
-        void serverConnectionClosed(ChannelId id, MessageSender messageSender);
+        void serverConnectionClosed(Channel channel, MessageSender messageSender);
 
-        HttpMessage serverHttpMessage(ChannelId id, String ip, String path,
+        HttpMessage serverHttpMessage(Channel channel, String ip, String path,
                 Map<String, List<String>> queryParameters, Map<String, String> requestHeaders);
     }
 
@@ -77,7 +79,7 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<Object> {
                 if (channelFuture.isSuccess()) {
                     System.out.println(channelHandlerContext.channel() + " Connected");
 
-                    callback.serverConnectionOpened(channelHandlerContext.channel().id(),
+                    callback.serverConnectionOpened(channelHandlerContext.channel(),
                             messageSender,
                             channelHandlerContext.channel().remoteAddress().toString());
                 }
@@ -88,7 +90,7 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<Object> {
                 requestHeaders.put(entry.getKey(), entry.getValue());
             }
             HttpMessage responseMessage =
-                    callback.serverHttpMessage(channelHandlerContext.channel().id(), ip, uri.path(),
+                    callback.serverHttpMessage(channelHandlerContext.channel(), ip, uri.path(),
                             uri.parameters(), requestHeaders);
             DefaultFullHttpResponse response = new DefaultFullHttpResponse(msg.protocolVersion(),
                     responseMessage.status(), Unpooled.wrappedBuffer(responseMessage.content()));
@@ -104,7 +106,7 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<Object> {
         String ip = channelHandlerContext.channel().remoteAddress().toString();
         byte[] messageBytes = new byte[msg.content().capacity()];
         msg.content().readBytes(messageBytes);
-        callback.serverConnectionMessage(channelHandlerContext.channel().id(), messageSender, ip,
+        callback.serverConnectionMessage(channelHandlerContext.channel(), messageSender, ip,
                 new String(messageBytes, StandardCharsets.UTF_8));
     }
 

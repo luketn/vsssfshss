@@ -1,10 +1,7 @@
 package com.mycodefu.vsssfshss.server;
 
-import java.net.InetSocketAddress;
-import java.util.Arrays;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelId;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.group.ChannelGroup;
@@ -22,6 +19,9 @@ import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.util.concurrent.DefaultEventExecutor;
+
+import java.net.InetSocketAddress;
+import java.util.Arrays;
 
 public class NettyServer implements MessageSender {
     private int initialPort;
@@ -86,25 +86,24 @@ public class NettyServer implements MessageSender {
         }
     }
 
-    public void sendMessage(ChannelId id, String message) {
+    public void sendMessage(Channel channel, String message) {
         try {
-            Channel channel = allChannels.find(id);
             if (channel != null) {
                 WebSocketFrame frame = new TextWebSocketFrame(message);
                 channel.writeAndFlush(frame);
             }
         } catch (Exception e) {
-            System.out.printf("Unable to find the channel %s to send message to.\n",
-                    id.asShortText());
+            System.out.printf("Failed to send message to %s.\n",
+                    channel.id().asShortText());
             e.printStackTrace();
         }
     }
 
-    public void broadcast(String message, ChannelId... excludeChannelIds) {
+    public void broadcast(String message, Channel... excludeChannels) {
         try {
-            ChannelMatcher[] matcherList =
-                    Arrays.stream(excludeChannelIds).map(channelId -> allChannels.find(channelId))
-                            .map(ChannelMatchers::isNot).toList().toArray(new ChannelMatcher[0]);
+            ChannelMatcher[] matcherList = Arrays.stream(excludeChannels)
+                    .map(ChannelMatchers::isNot)
+                    .toList().toArray(new ChannelMatcher[0]);
 
             WebSocketFrame frame = new TextWebSocketFrame(message);
             if (matcherList.length > 0) {
