@@ -8,11 +8,12 @@
 
         function receiveMessage(msg) {
             let outputBox = document.getElementById('receivedBox');
-            outputBox.innerText += msg.data + '\n';
+            var chatMessage = JSON.parse(msg.data);
+            outputBox.innerText += chatMessage.message + '\n';
         }
 
-        function sendMessage(message) {
-            socket.send(message);
+        function sendMessage(msg) {
+            socket.send(JSON.stringify({ message: msg }));
         }
     </script>
 </head>
