@@ -107,8 +107,11 @@ public class NettyServer implements MessageSender {
                             .map(ChannelMatchers::isNot).toList().toArray(new ChannelMatcher[0]);
 
             WebSocketFrame frame = new TextWebSocketFrame(message);
-            allChannels.writeAndFlush(frame, ChannelMatchers.compose(matcherList));
-
+            if (matcherList.length > 0) {
+                allChannels.writeAndFlush(frame, ChannelMatchers.compose(matcherList));
+            } else {
+                allChannels.writeAndFlush(frame);
+            }
         } catch (Exception e) {
             System.out.printf("Unable to broadcast message to all channels.\n");
             e.printStackTrace();

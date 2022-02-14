@@ -3,6 +3,7 @@ package com.mycodefu.vsssfshss;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import com.mycodefu.vsssfshss.chat.ChatMessageHandler;
 import com.mycodefu.vsssfshss.http.HttpResourceManager;
 import com.mycodefu.vsssfshss.names.NameGenerator;
 import com.mycodefu.vsssfshss.server.HttpMessage;
@@ -14,6 +15,7 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 
 public class Entrypoint {
     public static void main(String[] args) {
+        ChatMessageHandler chatMessageHandler = new ChatMessageHandler();
         NettyServer server =
                 new NettyServer(8080, new NettyServerHandler.ServerConnectionCallback() {
 
@@ -29,7 +31,7 @@ public class Entrypoint {
                             String sourceIpAddress, String message) {
                         System.out.println(message);
 
-                        messageSender.sendMessage(id, message);
+                        chatMessageHandler.handleMessage(message, messageSender);
                     }
 
                     @Override
