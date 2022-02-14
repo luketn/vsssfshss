@@ -37,7 +37,7 @@ public class Entrypoint {
                         System.out.println(message);
 
                         String name = ConnectionAttributes.get(channel, "name");
-                        chatMessageHandler.handleMessage(message, messageSender);
+                        chatMessageHandler.handleMessage(name, message, messageSender);
                     }
 
                     @Override

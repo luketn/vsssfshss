@@ -7,10 +7,11 @@ import com.mycodefu.vsssfshss.server.MessageSender;
 public class ChatMessageHandler {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public void handleMessage(String message, MessageSender messageSender) {
+    public void handleMessage(String fromName, String message, MessageSender messageSender) {
         try {
             ChatMessage chatMessage = objectMapper.readValue(message, ChatMessage.class);
-            messageSender.broadcast(objectMapper.writeValueAsString(chatMessage));
+            ChatMessage broadcastMessage = new ChatMessage(fromName, chatMessage.message());
+            messageSender.broadcast(objectMapper.writeValueAsString(broadcastMessage));
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
