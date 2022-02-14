@@ -9,7 +9,7 @@
         function receiveMessage(msg) {
             let outputBox = document.getElementById('receivedBox');
             var chatMessage = JSON.parse(msg.data);
-            outputBox.innerText += chatMessage.message + '\n';
+            outputBox.innerText += chatMessage.name + ': ' + chatMessage.message + '\n';
         }
 
         function sendMessage(msg) {
