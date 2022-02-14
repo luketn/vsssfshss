@@ -5,5 +5,5 @@ import io.netty.channel.ChannelId;
 
 public interface MessageSender {
     void sendMessage(ChannelId channel, ByteBuf message);
-    void broadcast(ChannelId excludedChannelId, ByteBuf message);
+    void broadcast(ByteBuf message, ChannelId... excludeChannelIds);
 }
