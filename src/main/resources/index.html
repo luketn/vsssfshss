@@ -4,6 +4,13 @@
     <script>
         let socket = new WebSocket("ws://" + location.host + "/ws");
 
+        socket.onmessage = receiveMessage;
+
+        function receiveMessage(msg) {
+            let outputBox = document.getElementById('receivedBox');
+            outputBox.innerText += msg.data + '\n';
+        }
+
         function sendMessage(message) {
             socket.send(message);
         }
@@ -18,6 +25,7 @@
     <label for="messageBox">Message</label>
     <textarea id="messageBox"></textarea>
     <button onclick="sendMessage(document.getElementById('messageBox').value)">Send</button>
+    <div id="receivedBox"></div>
 </body>
 
 </html>
