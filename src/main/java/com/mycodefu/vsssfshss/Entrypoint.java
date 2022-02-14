@@ -22,7 +22,8 @@ public class Entrypoint {
                     @Override
                     public void serverConnectionOpened(ChannelId id, MessageSender messageSender,
                             String remoteAddress) {
-                        String message = "Welcome %s!".formatted(NameGenerator.generateName());
+                        String message = "{\"message\": \"Welcome %s!\"}"
+                                .formatted(NameGenerator.generateName());
                         messageSender.sendMessage(id, message);
                     }
 
