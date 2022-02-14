@@ -21,6 +21,7 @@ import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
+import io.netty.util.AttributeKey;
 import io.netty.util.concurrent.DefaultEventExecutor;
 
 import java.net.InetSocketAddress;
@@ -89,25 +90,23 @@ public class NettyServer implements MessageSender {
         }
     }
 
-    public void sendMessage(ChannelId id, ByteBuf message) {
+    public void sendMessage(Channel channel, ByteBuf message) {
         try {
-            Channel channel = allChannels.find(id);
             if (channel != null) {
                 ByteBuf outboundMessage = message.copy();
                 WebSocketFrame frame = new TextWebSocketFrame(outboundMessage);
                 channel.writeAndFlush(frame);
             }
         } catch (Exception e) {
-            System.out.printf("Unable to find the channel %s to send message to.\n",
-                    id.asShortText());
+            System.out.printf("Failed to send message to %s.\n",
+                    channel.id().asShortText());
             e.printStackTrace();
         }
     }
 
-    public void broadcast(ByteBuf message, ChannelId... excludeChannelIds) {
+    public void broadcast(ByteBuf message, Channel... excludeChannels) {
         try {
-            ChannelMatcher[] matcherList = Arrays.stream(excludeChannelIds)
-                    .map(channelId -> allChannels.find(channelId))
+            ChannelMatcher[] matcherList = Arrays.stream(excludeChannels)
                     .map(ChannelMatchers::isNot)
                     .toList().toArray(new ChannelMatcher[0]);
 
