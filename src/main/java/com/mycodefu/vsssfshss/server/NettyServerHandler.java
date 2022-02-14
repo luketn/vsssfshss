@@ -1,10 +1,10 @@
 package com.mycodefu.vsssfshss.server;
 
 import static io.netty.handler.codec.http.HttpHeaderNames.HOST;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
@@ -49,7 +49,7 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<Object> {
                 String remoteAddress);
 
         void serverConnectionMessage(ChannelId id, MessageSender messageSender,
-                String sourceIpAddress, ByteBuf byteBuf);
+                String sourceIpAddress, String message);
 
         void serverConnectionClosed(ChannelId id, MessageSender messageSender);
 
@@ -102,8 +102,10 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<Object> {
     private void handleWebSocketRequest(ChannelHandlerContext channelHandlerContext,
             WebSocketFrame msg) {
         String ip = channelHandlerContext.channel().remoteAddress().toString();
+        byte[] messageBytes = new byte[msg.content().capacity()];
+        msg.content().readBytes(messageBytes);
         callback.serverConnectionMessage(channelHandlerContext.channel().id(), messageSender, ip,
-                msg.content());
+                new String(messageBytes, StandardCharsets.UTF_8));
     }
 
     private String getWebSocketLocation(FullHttpRequest req) {

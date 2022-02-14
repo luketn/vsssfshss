@@ -1,22 +1,16 @@
 package com.mycodefu.vsssfshss;
 
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.jar.Attributes;
-
 import com.mycodefu.vsssfshss.http.HttpResourceManager;
 import com.mycodefu.vsssfshss.names.NameGenerator;
 import com.mycodefu.vsssfshss.server.HttpMessage;
 import com.mycodefu.vsssfshss.server.MessageSender;
 import com.mycodefu.vsssfshss.server.NettyServer;
 import com.mycodefu.vsssfshss.server.NettyServerHandler;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelId;
 import io.netty.handler.codec.http.HttpResponseStatus;
-import io.netty.handler.pcap.PcapWriteHandler;
 
 public class Entrypoint {
     public static void main(String[] args) {
@@ -27,18 +21,15 @@ public class Entrypoint {
                     public void serverConnectionOpened(ChannelId id, MessageSender messageSender,
                             String remoteAddress) {
                         String message = "Welcome %s!".formatted(NameGenerator.generateName());
-                        messageSender.sendMessage(id, Unpooled.wrappedBuffer(message.getBytes(StandardCharsets.UTF_8)));
+                        messageSender.sendMessage(id, message);
                     }
 
                     @Override
                     public void serverConnectionMessage(ChannelId id, MessageSender messageSender,
-                            String sourceIpAddress, ByteBuf byteBuf) {
+                            String sourceIpAddress, String message) {
+                        System.out.println(message);
 
-                        byte[] bytes = new byte[byteBuf.capacity()];
-                        byteBuf.getBytes(0, bytes);
-                        System.out.println(new String(bytes));
-
-                        messageSender.sendMessage(id, byteBuf);
+                        messageSender.sendMessage(id, message);
                     }
 
                     @Override
