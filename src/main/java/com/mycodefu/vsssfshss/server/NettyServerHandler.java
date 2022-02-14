@@ -1,18 +1,23 @@
 package com.mycodefu.vsssfshss.server;
 
-import static io.netty.handler.codec.http.HttpHeaderNames.HOST;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.*;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketServerHandshaker;
 import io.netty.handler.codec.http.websocketx.WebSocketServerHandshakerFactory;
+
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static io.netty.handler.codec.http.HttpHeaderNames.HOST;
 
 public class NettyServerHandler extends SimpleChannelInboundHandler<Object> {
     private final ServerConnectionCallback callback;
@@ -46,7 +51,7 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<Object> {
                                     String remoteAddress);
 
         void serverConnectionMessage(Channel channel, MessageSender messageSender,
-                String sourceIpAddress, ByteBuf byteBuf);
+                String sourceIpAddress, String message);
 
         void serverConnectionClosed(Channel channel, MessageSender messageSender);
 
@@ -99,8 +104,10 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<Object> {
     private void handleWebSocketRequest(ChannelHandlerContext channelHandlerContext,
             WebSocketFrame msg) {
         String ip = channelHandlerContext.channel().remoteAddress().toString();
+        byte[] messageBytes = new byte[msg.content().capacity()];
+        msg.content().readBytes(messageBytes);
         callback.serverConnectionMessage(channelHandlerContext.channel(), messageSender, ip,
-                msg.content());
+                new String(messageBytes, StandardCharsets.UTF_8));
     }
 
     private String getWebSocketLocation(FullHttpRequest req) {

@@ -1,9 +1,7 @@
 package com.mycodefu.vsssfshss.server;
 
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelId;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.group.ChannelGroup;
@@ -16,12 +14,10 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.address.DynamicAddressConnectHandler;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
-import io.netty.handler.codec.http.websocketx.BinaryWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
-import io.netty.util.AttributeKey;
 import io.netty.util.concurrent.DefaultEventExecutor;
 
 import java.net.InetSocketAddress;
@@ -90,11 +86,10 @@ public class NettyServer implements MessageSender {
         }
     }
 
-    public void sendMessage(Channel channel, ByteBuf message) {
+    public void sendMessage(Channel channel, String message) {
         try {
             if (channel != null) {
-                ByteBuf outboundMessage = message.copy();
-                WebSocketFrame frame = new TextWebSocketFrame(outboundMessage);
+                WebSocketFrame frame = new TextWebSocketFrame(message);
                 channel.writeAndFlush(frame);
             }
         } catch (Exception e) {
@@ -104,16 +99,18 @@ public class NettyServer implements MessageSender {
         }
     }
 
-    public void broadcast(ByteBuf message, Channel... excludeChannels) {
+    public void broadcast(String message, Channel... excludeChannels) {
         try {
             ChannelMatcher[] matcherList = Arrays.stream(excludeChannels)
                     .map(ChannelMatchers::isNot)
                     .toList().toArray(new ChannelMatcher[0]);
 
-            ByteBuf outboundMessage = message.copy();
-            WebSocketFrame frame = new TextWebSocketFrame(outboundMessage);
-            allChannels.writeAndFlush(frame, ChannelMatchers.compose(matcherList));
-
+            WebSocketFrame frame = new TextWebSocketFrame(message);
+            if (matcherList.length > 0) {
+                allChannels.writeAndFlush(frame, ChannelMatchers.compose(matcherList));
+            } else {
+                allChannels.writeAndFlush(frame);
+            }
         } catch (Exception e) {
             System.out.printf("Unable to broadcast message to all channels.\n");
             e.printStackTrace();

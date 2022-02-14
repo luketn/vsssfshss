@@ -1,50 +1,49 @@
 package com.mycodefu.vsssfshss;
 
-import com.mycodefu.vsssfshss.http.HttpResourceManager;
-import com.mycodefu.vsssfshss.names.NameGenerator;
-import com.mycodefu.vsssfshss.server.*;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-import io.netty.channel.Channel;
-import io.netty.handler.codec.http.HttpResponseStatus;
-
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import com.mycodefu.vsssfshss.chat.ChatMessageHandler;
+import com.mycodefu.vsssfshss.http.HttpResourceManager;
+import com.mycodefu.vsssfshss.names.NameGenerator;
+import com.mycodefu.vsssfshss.server.ConnectionAttributes;
+import com.mycodefu.vsssfshss.server.HttpMessage;
+import com.mycodefu.vsssfshss.server.MessageSender;
+import com.mycodefu.vsssfshss.server.NettyServer;
+import com.mycodefu.vsssfshss.server.NettyServerHandler;
+import io.netty.channel.Channel;
+import io.netty.handler.codec.http.HttpResponseStatus;
 
 public class Entrypoint {
     public static void main(String[] args) {
+        ChatMessageHandler chatMessageHandler = new ChatMessageHandler();
         NettyServer server =
                 new NettyServer(8080, new NettyServerHandler.ServerConnectionCallback() {
 
                     @Override
                     public void serverConnectionOpened(Channel channel, MessageSender messageSender,
-                                                       String remoteAddress) {
+                            String remoteAddress) {
 
                         String name = NameGenerator.generateName();
                         ConnectionAttributes.set(channel, "name", name);
 
-                        String message = "Welcome %s!".formatted(name);
-                        messageSender.sendMessage(channel, Unpooled.wrappedBuffer(message.getBytes(StandardCharsets.UTF_8)));
+                        String message = "{\"name\": \"Server\", \"message\": \"Welcome %s!\"}"
+                                .formatted(name);
+                        messageSender.sendMessage(channel, message);
                     }
 
                     @Override
-                    public void serverConnectionMessage(Channel channel, MessageSender messageSender,
-                            String sourceIpAddress, ByteBuf byteBuf) {
-
-                        byte[] bytes = new byte[byteBuf.capacity()];
-                        byteBuf.getBytes(0, bytes);
-                        String message = new String(bytes);
+                    public void serverConnectionMessage(Channel channel,
+                            MessageSender messageSender, String sourceIpAddress, String message) {
                         System.out.println(message);
 
                         String name = ConnectionAttributes.get(channel, "name");
-
-                        messageSender.sendMessage(channel, Unpooled.wrappedBuffer((name + ": " + message).getBytes(StandardCharsets.UTF_8)));
+                        chatMessageHandler.handleMessage(name, message, messageSender);
                     }
 
                     @Override
-                    public void serverConnectionClosed(Channel channel, MessageSender messageSender) {
+                    public void serverConnectionClosed(Channel channel,
+                            MessageSender messageSender) {
 
                     }
 
