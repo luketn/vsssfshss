@@ -51,12 +51,13 @@ public class Entrypoint {
                     public HttpMessage serverHttpMessage(Channel channel, String ip, String path,
                             Map<String, List<String>> queryParameters,
                             Map<String, String> requestHeaders) {
-                        byte[] content = HttpResourceManager
-                                .getResource(path.equals("/") ? "/index.html" : path);
+                        String actualPath = path.equals("/") ? "/index.html" : path;
+                        byte[] content = HttpResourceManager.getResource(actualPath);
                         if (content != null) {
                             Map<String, Object> headers = new HashMap<>();
                             headers.put("content-length", content.length);
-                            headers.put("content-type", "text/html");
+                            headers.put("content-type",
+                                    HttpResourceManager.getContentType(actualPath));
                             return new HttpMessage(HttpResponseStatus.OK, content, headers);
                         } else {
                             content = HttpResourceManager.getResource("/404.html");
@@ -65,7 +66,8 @@ public class Entrypoint {
                             }
                             Map<String, Object> headers = new HashMap<>();
                             headers.put("content-length", content.length);
-                            headers.put("content-type", "text/html");
+                            headers.put("content-type",
+                                    HttpResourceManager.getContentType(actualPath));
                             return new HttpMessage(HttpResponseStatus.NOT_FOUND, content, headers);
                         }
                     }

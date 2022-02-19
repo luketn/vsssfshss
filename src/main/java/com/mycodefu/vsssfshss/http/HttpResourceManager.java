@@ -31,4 +31,18 @@ public class HttpResourceManager {
         }
         return content;
     }
+
+    public static String getContentType(String path) {
+        String fileExtension = path.substring(path.lastIndexOf('.'));
+        switch (fileExtension) {
+            case ".html": {
+                return "text/html";
+            }
+            case ".mp3": {
+                return "audio/mpegapplication/octet-stream";
+            }
+            default:
+                return "text/plain";
+        }
+    }
 }
