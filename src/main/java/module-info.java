@@ -7,4 +7,5 @@ open module com.mycodefu.vsssfshss {
     requires io.netty.handler;
     requires jakarta.websocket.api;
     requires jakarta.enterprise.cdi.api;
+    requires com.fasterxml.jackson.databind;
 }
