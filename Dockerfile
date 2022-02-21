@@ -5,8 +5,8 @@ RUN apk upgrade --no-cache && \
 
 WORKDIR /opt/vsssfshss
 
-ADD target/vsssfshss.jar .
+ADD target/quarkus-app .
 
 EXPOSE 8080/tcp
 
-CMD java -jar vsssfshss.jar
+CMD java -jar quarkus-run.jar

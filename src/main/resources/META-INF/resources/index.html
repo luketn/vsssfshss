@@ -3,7 +3,7 @@
 <head>
     <script>
         let socket = new WebSocket("ws://" + location.host + "/ws");
-        let alertSound = new Audio('/alert.mp3');
+        let alert = new Audio('/alert.mp3');
 
         socket.onmessage = receiveMessage;
 
@@ -11,7 +11,7 @@
             let outputBox = document.getElementById('receivedBox');
             var chatMessage = JSON.parse(msg.data);
             outputBox.innerText += chatMessage.name + ': ' + chatMessage.message + '\n';
-            alertSound.play();
+            alert.play();
         }
 
         function sendMessage(msg) {
