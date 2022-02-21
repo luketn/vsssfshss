@@ -1,6 +1,8 @@
 <html>
 
 <head>
+    <link rel="stylesheet" href="style.css" />
+    <script src="accessibility.js"></script>
     <script>
         let socket = new WebSocket("ws://" + location.host + "/ws");
         let alert = new Audio('/alert.mp3');
@@ -11,6 +13,7 @@
             let outputBox = document.getElementById('receivedBox');
             var chatMessage = JSON.parse(msg.data);
             outputBox.innerText += chatMessage.name + ': ' + chatMessage.message + '\n';
+            speak(chatMessage.name + ' says ' + chatMessage.message);
             alert.play();
         }
 
@@ -29,6 +32,8 @@
     <textarea id="messageBox"></textarea>
     <button onclick="sendMessage(document.getElementById('messageBox').value)">Send</button>
     <div id="receivedBox"></div>
+
+    <div id="accessibleAlert" role="alert" class="sr-only"></div>
 </body>
 
 </html>
