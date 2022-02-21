@@ -1,6 +1,8 @@
 <html>
 
 <head>
+    <link rel="stylesheet" href="style.css" />
+    <script src="accessibility.js"></script>
     <script>
         let socket = new WebSocket("ws://" + location.host + "/ws");
         let alert = new Audio('/alert.mp3');
@@ -11,24 +13,33 @@
             let outputBox = document.getElementById('receivedBox');
             var chatMessage = JSON.parse(msg.data);
             outputBox.innerText += chatMessage.name + ': ' + chatMessage.message + '\n';
+            speak(chatMessage.name + ' says ' + chatMessage.message);
             alert.play();
         }
 
         function sendMessage(msg) {
             socket.send(JSON.stringify({ message: msg }));
         }
+
+        function onMessageFormSubmit() {
+            var messageBox = document.getElementById('messageBox');
+            sendMessage(messageBox.value);
+            messageBox.value = '';
+            return false;
+        }
     </script>
 </head>
 
 <body>
-    <h1>Hello world!</h1>
-    <p>
-        This was served by the VSSSFSHSS HTTP server!
-    </p>
-    <label for="messageBox">Message</label>
-    <textarea id="messageBox"></textarea>
-    <button onclick="sendMessage(document.getElementById('messageBox').value)">Send</button>
+    <h1>VSSSFSHSS</h1>
+    <form onsubmit="return onMessageFormSubmit()">
+        <label for="messageBox">Message</label>
+        <input type="text" id="messageBox" required="true" />
+        <button type="submit">Send</button>
+    </form>
     <div id="receivedBox"></div>
+
+    <div id="accessibleAlert" role="alert" class="sr-only"></div>
 </body>
 
 </html>
