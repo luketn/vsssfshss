@@ -2,9 +2,9 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="1920"
-   height="1080"
-   viewBox="0 0 1920 1080"
+   width="1024"
+   height="768"
+   viewBox="0 0 1024 768"
    version="1.1"
    id="svg5"
    inkscape:version="1.1.2 (b8e25be8, 2022-02-05)"
@@ -25,14 +25,15 @@
      showgrid="false"
      inkscape:lockguides="true"
      inkscape:zoom="0.5787037"
-     inkscape:cx="959.904"
+     inkscape:cx="437.184"
      inkscape:cy="540"
      inkscape:window-width="1920"
      inkscape:window-height="1027"
      inkscape:window-x="0"
      inkscape:window-y="25"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="layer1" />
+     inkscape:window-maximized="0"
+     inkscape:current-layer="layer1"
+     width="800px" />
   <defs
      id="defs2" />
   <g
@@ -40,11 +41,20 @@
      inkscape:groupmode="layer"
      id="layer1">
     <rect
-       style="fill:#0000ff;fill-rule:evenodd"
-       id="rect31"
-       width="1157.76"
-       height="416.448"
-       x="267.84"
-       y="86.400009" />
+       style="fill:#0000ff;fill-rule:evenodd;stroke-width:1.27838"
+       id="ocean"
+       width="1024.704"
+       height="768.96002"
+       x="1.7279781"
+       y="1.2428283e-05">
+      <title
+         id="title276">Ocean</title>
+    </rect>
+    <path
+       d="m 410.62063,73.28 c -89.97,0 -168.54,54.77 -212.27,101.63 l -87.33,-66.05 c -12.13,-9.18 -30.24,0.6 -27.14,14.66 l 24.18,109.76 -24.19,109.77 c -3.1,14.06 15.01,23.83 27.14,14.66 l 87.33,-66.05 c 43.73,46.85 122.31,101.62 212.28,101.62 137.46,0 248.9,-128 248.9,-160 0,-32 -111.44,-160 -248.9,-160 z m 87.43,184 c -13.25,0 -24,-10.75 -24,-24 0,-13.26 10.75,-24 24,-24 13.26,0 24,10.74 24,24 0,13.25 -10.75,24 -24,24 z"
+       id="fishplayer">
+      <title
+         id="title394">Fish</title>
+    </path>
   </g>
 </svg>
