@@ -9,3 +9,8 @@
       white-space: nowrap; /* added line */
       border: 0;
 }
+
+.hidden {
+      display: none;
+      visibility: hidden;
+}

@@ -15,6 +15,9 @@
             outputBox.innerText += chatMessage.name + ': ' + chatMessage.message + '\n';
             speak(chatMessage.name + ' says ' + chatMessage.message);
             alert.play();
+            if (chatMessage.message === "Let's play a game!") {
+                playGame();
+            }
         }
 
         function sendMessage(msg) {
@@ -26,6 +29,11 @@
             sendMessage(messageBox.value);
             messageBox.value = '';
             return false;
+        }
+
+        function playGame() {
+            var gameElement = document.getElementById('game');
+            gameElement.classList.remove('hidden');
         }
     </script>
 </head>
@@ -40,6 +48,10 @@
     <div id="receivedBox"></div>
 
     <div id="accessibleAlert" role="alert" class="sr-only"></div>
+
+    <div class="hidden" id="game">
+        <p>You found the game!</p>
+    </div>
 </body>
 
 </html>
