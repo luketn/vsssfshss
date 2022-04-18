@@ -24,8 +24,9 @@ public class NameGenerator {
         }
     }
 
+    private static final Random random = new Random();
+
     public static String generateName() {
-        Random random = new Random(System.nanoTime());
         return adjectives[random.nextInt(adjectives.length)] + nouns[random.nextInt(nouns.length)]
                 + String.format("%04d", random.nextInt(10000));
     }
