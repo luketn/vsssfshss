@@ -28,6 +28,6 @@ public class NameGenerator {
 
     public static String generateName() {
         return adjectives[random.nextInt(adjectives.length)] + nouns[random.nextInt(nouns.length)]
-                + String.format("%04d", random.nextInt(10000));
+                + String.format("%03d", random.nextInt(1000));
     }
 }
