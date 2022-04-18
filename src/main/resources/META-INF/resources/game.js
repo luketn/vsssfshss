@@ -1,24 +1,29 @@
 function initKeyHandler(gameElement) {
+    let x = 0;
+    let y = 0;
+    let speed = 5;
+
     document.addEventListener('keydown', (event)=>{
-        console.log('Keydown', event);
+        let fishPlayer = document.getElementById("fishplayer");
         switch (event.key) {
             case "a":{
-                console.log('go left!');
+                x-=speed;
                 break;
             }
             case "d":{
-                console.log('go right!');
+                x+=speed;
                 break;
             }
             case "s":{
-                console.log('go down!');
+                y+=speed;
                 break;
             }
             case "w":{
-                console.log('go up!');
+                y-=speed;
                 break;
             }
         }
+        fishPlayer.setAttribute('transform', `translate(${x},${y})`);
     })
 }
 
