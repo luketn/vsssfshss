@@ -9,3 +9,42 @@
       white-space: nowrap; /* added line */
       border: 0;
 }
+
+.hidden {
+      display: none;
+      visibility: hidden;
+}
+
+#fishplayer {
+      animation-name: playeridle;
+      transform-origin: center;
+      animation-duration: 1s;
+      animation-iteration-count: 2;
+      animation-fill-mode: forwards;
+      animation-timing-function: linear;
+      display: inline-block;
+}
+@keyframes playeridle {
+      0% {
+      }
+      100% {
+      }
+}
+#fisheye {
+      animation-name: fisheye;
+      animation-duration: 1s;
+      animation-iteration-count: infinite;
+      transform-origin: 50% 50%;
+      display: inline-block;      
+}
+@keyframes fisheye {
+      0% {
+            fill: red;
+      }
+      25% {
+            fill: black;
+      }
+      50% {
+            fill: red;
+      }
+}

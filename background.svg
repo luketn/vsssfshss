@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="1024"
+   height="768"
+   viewBox="0 0 1024 768"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.1.2 (b8e25be8, 2022-02-05)"
+   sodipodi:docname="background.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:document-units="px"
+     showgrid="false"
+     inkscape:lockguides="true"
+     inkscape:zoom="0.5787037"
+     inkscape:cx="368.064"
+     inkscape:cy="439.776"
+     inkscape:window-width="1920"
+     inkscape:window-height="1027"
+     inkscape:window-x="0"
+     inkscape:window-y="25"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="layer1"
+     width="800px" />
+  <defs
+     id="defs2" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="fill:#0000ff;fill-rule:evenodd;stroke-width:1.27838"
+       id="ocean"
+       width="1024.704"
+       height="768.96002"
+       x="1.7279781"
+       y="1.2428283e-05">
+      <title
+         id="title276">Ocean</title>
+    </rect>
+    <g id="fishplayer">
+    <path
+       d="m 410.62063,73.28 c -89.97,0 -168.54,54.77 -212.27,101.63 l -87.33,-66.05 c -12.13,-9.18 -30.24,0.6 -27.14,14.66 l 24.18,109.76 -24.19,109.77 c -3.1,14.06 15.01,23.83 27.14,14.66 l 87.33,-66.05 c 43.73,46.85 122.31,101.62 212.28,101.62 137.46,0 248.9,-128 248.9,-160 0,-32 -111.44,-160 -248.9,-160 z m 87.43,184 c -13.25,0 -24,-10.75 -24,-24 0,-13.26 10.75,-24 24,-24 13.26,0 24,10.74 24,24 0,13.25 -10.75,24 -24,24 z"
+       id="fishbody">
+      <title
+         id="title394">Fish</title>
+    </path>
+    <ellipse
+       style="fill:#ff0000;fill-rule:evenodd"
+       id="fisheye"
+       cx="504.57599"
+       cy="231.552"
+       rx="31.104"
+       ry="27.648001">
+      <title
+         id="title428">Eye</title>
+    </ellipse>
+    </g>
+  </g>
+</svg>
