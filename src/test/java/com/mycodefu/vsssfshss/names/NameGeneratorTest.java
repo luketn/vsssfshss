@@ -16,15 +16,6 @@ class NameGeneratorTest {
 
         assertNotNull(name);
         assertTrue(name.length() > 2);
-    }
-
-    @Test
-    void generateUniqueNames() {
-        List<String> nameList = IntStream.range(0, 100000).mapToObj(value -> NameGenerator.generateName()).toList();
-
-        for (int i = 0; i < 1000; i++) {
-            String name = NameGenerator.generateName();
-            assertFalse(nameList.contains(name), String.format("Generated duplicate name %s", name));
-        }
+        assertTrue(name.matches("^[A-Z][a-z]+[A-Z][a-z]+\\d{3}$"));
     }
 }
