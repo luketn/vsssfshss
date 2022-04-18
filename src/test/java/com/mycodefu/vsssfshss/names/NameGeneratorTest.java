@@ -20,7 +20,9 @@ class NameGeneratorTest {
 
     @Test
     void generateUniqueNames() {
-        List<String> nameList = IntStream.range(0, 100000).mapToObj(value -> NameGenerator.generateName()).toList();
+        List<String> nameList = IntStream.range(0, 100_000).mapToObj(value -> NameGenerator.generateName()).toList();
+
+        nameList.forEach(System.out::println);
 
         for (int i = 0; i < 1000; i++) {
             String name = NameGenerator.generateName();
