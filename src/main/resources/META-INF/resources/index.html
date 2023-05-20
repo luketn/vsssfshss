@@ -2,6 +2,7 @@
 
 <head>
     <link rel="stylesheet" href="style.css" />
+    <script src="message.js"></script>
     <script src="accessibility.js"></script>
     <script>
         let socket = new WebSocket("ws://" + location.host + "/ws");
@@ -12,7 +13,7 @@
         function receiveMessage(msg) {
             let outputBox = document.getElementById('receivedBox');
             var chatMessage = JSON.parse(msg.data);
-            outputBox.innerHTML += chatMessage.name + ': ' + chatMessage.message + '\n';
+            outputBox.innerHTML += generateHTMLForMessage(chatMessage);
             speak(chatMessage.name + ' says ' + chatMessage.message);
             alert.play();
             if (chatMessage.message === "Let's play a game!") {
