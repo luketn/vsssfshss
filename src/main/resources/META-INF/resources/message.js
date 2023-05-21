@@ -22,6 +22,7 @@ function generateHTMLForMessage(chatMessage) {
 }
 
 function renderMessage(message) {
+    message = message.replace('\n', '<br>');
     for (const [regex, renderer] of renderers) {
         message = message.replace(regex, renderer)
     }

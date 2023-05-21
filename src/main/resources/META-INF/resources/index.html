@@ -33,7 +33,6 @@
         }
 
         function messageBoxKeyDown(event) {
-            // Check it in a good way (not checking key codes).
             if (event.key === 'Enter' && !event.shiftKey) {
                 onMessageFormSubmit();
                 event.preventDefault();
