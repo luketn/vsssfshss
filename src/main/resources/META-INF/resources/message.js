@@ -14,15 +14,14 @@ function generateHTMLForMessage(chatMessage) {
     return `
         <div class="message">
             <div class="message__author">${escapeHTML(chatMessage.name)}:</div>
-            <div class="message__content">
-                ${renderMessage(escapeHTML(chatMessage.message))}
-            </div>
+            <pre class="message__content">
+${renderMessage(escapeHTML(chatMessage.message))}
+            </pre>
         </div>
     `
 }
 
 function renderMessage(message) {
-    message = message.replace('\n', '<br>');
     for (const [regex, renderer] of renderers) {
         message = message.replace(regex, renderer)
     }
