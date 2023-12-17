@@ -6,6 +6,18 @@
     <script src="accessibility.js"></script>
     <script>
         let socket = new WebSocket("ws://" + location.host + "/ws");
+
+        socket.onclose = function (event) {
+            if (event.wasClean) {
+                //alert(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
+                //reconnect
+                console.log(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}. Reconnecting...`)
+                socket = new WebSocket("ws://" + location.host + "/ws");
+            } else {
+                alert('[close] Connection died');
+            }
+        };
+
         let alert = new Audio('/alert.mp3');
 
         socket.onmessage = receiveMessage;
